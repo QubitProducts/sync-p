@@ -1,4 +1,4 @@
-var promise = require('../index')
+var promise = require('./index')
 module.exports = function deferred () {
   var _resolve, _reject
   var _promise = promise(function (resolve, reject) {

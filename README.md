@@ -41,6 +41,12 @@ promise(function (resolve, reject) {
 })
 .then(onSuccess, onError)
 
+var all = require('sync-p/all')
+
+all([1, 2, promise3]).then(function (val) {
+  console.log(val) // [1, 2, 3]
+})
+
 // ... etc.
 ```
 

@@ -2,9 +2,9 @@
 // // a) the lib is capable of returning syncronously, i.e. it does not defer everything
 // // b) to avoid bloat, the lib assumes non falsey args to be functions
 //
-// var resolved = require('../lib/resolved')
-// var rejected = require('../lib/rejected')
-// var deferred = require('../lib/deferred')
+// var resolved = require('../resolved')
+// var rejected = require('../rejected')
+// var deferred = require('../deferred')
 // var adapter = {
 //   resolved: resolved,
 //   rejected: rejected,

@@ -1,7 +1,7 @@
 /* globals describe it Promise */
 var expect = require('chai').expect
 var promise = require('../index')
-var all = require('../lib/all')
+var all = require('../all')
 
 describe('all', function () {
   describe('empty array', function () {

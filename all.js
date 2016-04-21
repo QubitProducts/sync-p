@@ -1,4 +1,4 @@
-var promise = require('../index')
+var promise = require('./index')
 module.exports = function all (values) {
   values = values.slice(0)
   return promise(function (resolve, reject) {
