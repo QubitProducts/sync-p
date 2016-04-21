@@ -1,0 +1,39 @@
+{
+  "name": "sync-p",
+  "version": "0.0.3",
+  "description": "A tiny sync promise lib",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "author": {
+    "name": "Alan Clarke",
+    "email": "alan@qubit.com",
+    "url": "qubit.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QubitProducts/sync-p.git"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.3",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-mocha": "^0.2.2",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^1.7.0",
+    "mocha": "^2.4.5",
+    "promises-aplus-tests": "^2.1.1",
+    "require1k": "stuk/require1k",
+    "serve": "^1.4.0",
+    "sinon": "^2.0.0-pre",
+    "standard": "^6.0.8",
+    "webpack": "^1.12.14"
+  },
+  "dependencies": {}
+}
