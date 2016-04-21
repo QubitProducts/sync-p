@@ -70,15 +70,4 @@ describe('error handling', function () {
     })
     _resolve(value)
   })
-  it('should handle null', function () {
-    return promise(function (resolve, reject) {
-      resolve(123)
-    })
-    .then(function () {
-      throw null
-    })
-    .catch(function (e) {
-      expect(e).to.eql(null)
-    })
-  })
 })

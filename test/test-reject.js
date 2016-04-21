@@ -68,13 +68,14 @@ describe('reject', function () {
       done()
     })
   })
-  it('should reject an already rejected promise with the same reason', function (done) {
-    this.timeout(10000)
+  it('should reject an already fulfilled promise with the same reason', function (done) {
     return promise(function (resolve, reject) {
       resolve()
     }).then(function () {
       return promise(function (resolve, reject) {
-        reject(123)
+        setTimeout(function () {
+          reject(123)
+        }, 0)
       })
     })
     .catch(function (reason) {
@@ -83,13 +84,14 @@ describe('reject', function () {
     })
   })
   it('should reject an already rejected promise from a rejected promise with the same reason', function (done) {
-    this.timeout(10000)
     return promise(function (resolve, reject) {
       reject()
     })
     .catch(function () {
       return promise(function (resolve, reject) {
-        reject(123)
+        setTimeout(function () {
+          reject(123)
+        }, 0)
       })
     })
     .catch(function (reason) {
