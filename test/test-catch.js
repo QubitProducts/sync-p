@@ -1,71 +1,86 @@
-/* globals describe it Promise */
+/* globals describe it */
 var expect = require('chai').expect
-var promise = require('../index')
+var sinon = require('sinon')
+var Promise = require('../extra')
 
 describe('catch', function () {
-  it('should resolve values', function (done) {
-    return promise(function (resolve, reject) {
-      reject(123)
-    })
-    .catch(function (val) {
-      expect(val).to.eql(123)
-      done()
-    })
+  it('should call reject', function () {
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.reject(123)
+    d.promise.catch(stub)
+    expect(stub.calledWith(123)).to.eql(true)
   })
-  it('should be chainable', function (done) {
-    return promise(null, function (resolve, reject) {
-      reject(123)
-    })
-    .catch(function () {
-      return 234
-    })
-    .then(function (chained) {
-      expect(chained).to.eql(234)
-      done()
-    })
+  it('should recover when caught', function () {
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.reject(123)
+    d.promise
+      .catch(function () { return 234 })
+      .then(stub, null)
+    expect(stub.calledWith(234)).to.eql(true)
   })
-  it('should be really chainable', function (done) {
-    return promise(function (resolve, reject) {
-      reject(123)
-    })
-    .then(null, null)
-    .catch(function () {
-      return 234
-    })
-    .then(function (chained) {
-      expect(chained).to.eql(234)
-      done()
-    })
+  it('should be really chainable', function () {
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.reject(123)
+    d.promise
+      .then(null, null)
+      .catch(function () {
+        return 234
+      })
+      .then(stub)
+    expect(stub.calledWith(234)).to.eql(true)
   })
-  it('should not change once rejected', function (done) {
-    return promise(function (resolve, reject) {
-      reject(123)
-      reject(234)
-    })
-    .catch(function (val) {
-      expect(val).to.eql(123)
-      done()
-    })
+  it('should be really really chainable', function () {
+    var resolvedStub = sinon.stub()
+    var rejectedStub = sinon.stub()
+    var d = Promise.defer()
+    d.reject(123)
+    d.promise
+      .then(resolvedStub, null)
+      .catch(rejectedStub)
+    expect(resolvedStub.called).to.eql(false)
+    expect(rejectedStub.calledWith(123)).to.eql(true)
   })
-
-  // requires native Promise api
-  if (typeof Promise === 'undefined') return
-  it('should not resolve promises', function (done) {
-    return promise(function (resolve, reject) {
-      reject(Promise.resolve(123))
-    })
-    .catch(function (val) {
-      expect(typeof val).to.eql('object')
-      done()
-    })
+  it('should not change once rejected', function () {
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.reject(123)
+    d.reject(234)
+    d.promise.catch(stub)
+    expect(d.promise.value).to.eql(123)
   })
-  it('should be compatible with the native promise api', function (done) {
-    return Promise.all([promise(function (resolve, reject) {
-      reject(123)
-    })])
-    .catch(function (reason) {
-      expect(reason).to.eql(123)
-      done()
+  it('should reject an already fulfilled promise with the same reason', function () {
+    var stub = sinon.stub()
+    var d1 = Promise.defer()
+    var d2 = Promise.defer()
+    d2.reject(123)
+    d1.resolve()
+    d1.promise.then(function () {
+      return d2.promise
     })
+    .catch(stub)
+    expect(stub.calledWith(123)).to.eql(true)
+  })
+  it('should reject an already rejected promise from a rejected promise with the same reason', function () {
+    var stub = sinon.stub()
+    var d1 = Promise.defer()
+    var d2 = Promise.defer()
+    d1.reject()
+    d2.reject(123)
+    d1.promise.catch(function () {
+      return d2.promise
+    })
+    .then(null, stub)
+    expect(stub.calledWith(123)).to.eql(true)
+  })
+  it('should not resolve promises', function () {
+    var p = Promise.resolve(123)
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.reject(p)
+    d.promise.catch(stub)
+    expect(stub.calledWith(p)).to.eql(true)
   })
 })

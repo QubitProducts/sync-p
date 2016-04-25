@@ -1,8 +1,10 @@
 module.exports = function promise (resolver) {
   var waiting = { res: [], rej: [] }
-  var p = { 'then': then, 'catch': thenCatch }
   var reject = api(false)
   var resolve = api(true, reject)
+  var p = { 'then': then, 'catch': function thenCatch (onReject) {
+    return then(null, onReject)
+  }}
   try { resolver(resolve, reject) } catch (e) {
     p.status = false
     p.value = e
@@ -12,8 +14,8 @@ module.exports = function promise (resolver) {
   function api (status, reject) {
     return function end (val) {
       if (typeof p.status !== 'undefined') return
-      if (val === p) throw new Error('TypeError: recurses! infinite promise chain detected')
-      if (status && val && typeof val === 'object' && val.then) return val.then(resolve, reject)
+      if (val === p) throw new Error('Error: recurses! infinite promise chain detected')
+      if (status && val) try { if ('then' in val) return val.then(resolve, reject) } catch (e) {}
       p.status = status
       p.value = val
       flush()
@@ -21,14 +23,7 @@ module.exports = function promise (resolver) {
   }
 
   function then (onResolve, onReject) {
-    if (!onResolve && !onReject) return p
-    if (!onResolve && p.status === true) return p
-    if (!onReject && p.status === false) return p
     return chain(onResolve, onReject)
-  }
-
-  function thenCatch (onReject) {
-    return then(null, onReject)
   }
 
   function chain (onResolve, onReject) {
@@ -38,7 +33,11 @@ module.exports = function promise (resolver) {
       flush()
       function handleNext (handler) {
         return function next (value) {
-          try { resolve(handler ? handler(value) : value) } catch (err) { reject(err) }
+          try {
+            value = handler ? handler(value) : value
+            if (p.status) return resolve(value)
+            return onReject ? resolve(value) : reject(value)
+          } catch (err) { reject(err) }
         }
       }
     })

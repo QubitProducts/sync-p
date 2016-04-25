@@ -5,7 +5,7 @@ A tiny sync promise lib
 sync-p is 52 lines of code, but handles the majority of the promise spec. Some of the spec is intentionally avoided, e.g.
 - sync-p is capable of returning synchronously, i.e. it does not defer everything
 - to avoid bloat sync-p assumes that truthy args passed to .then are functions (strict adherence involves explicitly handling cases like .then(5) ...like, just don't do that, that's not the api)
-- it doesn't handle the case where promise x is given a handler that returns promise x, causing an infinite promise recursion, because why would you ever do that
+- it does not throw if a promise is rejected and no reject handler is attached
 
 ## installation
 ```

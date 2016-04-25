@@ -1,114 +1,93 @@
-/* globals describe it Promise */
+/* globals describe it */
 var expect = require('chai').expect
 var sinon = require('sinon')
-var promise = require('../index')
+var Promise = require('../extra')
 
 describe('reject', function () {
-  it('should resolve values', function (done) {
-    return promise(function (resolve, reject) {
-      reject(123)
-    })
-    .then(null, function (val) {
-      expect(val).to.eql(123)
-      done()
-    })
-  })
-  it('should be chainable', function (done) {
-    return promise(null, function (resolve, reject) {
-      reject(123)
-    })
-    .then(null, function () {
-      return 234
-    })
-    .then(function (chained) {
-      expect(chained).to.eql(234)
-      done()
-    })
-  })
-  it('should be really chainable', function (done) {
-    return promise(function (resolve, reject) {
-      reject(123)
-    })
-    .then(null, null)
-    .then(null, function () {
-      return 234
-    })
-    .then(function (chained) {
-      expect(chained).to.eql(234)
-      done()
-    })
-  })
-  it('should be really really chainable', function (done) {
-    return promise(function (resolve, reject) {
-      reject(123)
-    })
-    .then(function () {}, null)
-    .then(null, function () {
-      done()
-    })
-  })
-  it('should not change once rejected', function (done) {
-    return promise(function (resolve, reject) {
-      reject(123)
-      reject(234)
-    })
-    .then(null, function (val) {
-      expect(val).to.eql(123)
-      done()
-    })
-  })
-  it('should not call resolve', function (done) {
+  it('should call reject', function () {
     var stub = sinon.stub()
-    return promise(function (resolve, reject) {
-      reject(123)
-    })
-    .then(stub, function () {})
-    .then(function () {
-      expect(stub.called).to.eql(false)
-      done()
-    })
+    var d = Promise.defer()
+    d.reject(123)
+    d.promise.then(null, stub)
+    expect(stub.calledWith(123)).to.eql(true)
   })
-  it('should reject an already fulfilled promise with the same reason', function (done) {
-    return promise(function (resolve, reject) {
-      resolve()
-    }).then(function () {
-      return promise(function (resolve, reject) {
-        setTimeout(function () {
-          reject(123)
-        }, 0)
+  it('should not call resolve', function () {
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.reject(123)
+    d.promise.then(stub, null)
+    expect(stub.called).to.eql(false)
+  })
+  it('should recover when caught', function () {
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.reject(123)
+    d.promise
+      .then(null, function () { return 234 })
+      .then(stub, null)
+    expect(stub.calledWith(234)).to.eql(true)
+  })
+  it('should be really chainable', function () {
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.reject(123)
+    d.promise
+      .then(null, null)
+      .then(null, function () {
+        return 234
       })
-    })
-    .catch(function (reason) {
-      expect(reason).to.eql(123)
-      done()
-    })
+      .then(stub)
+    expect(stub.calledWith(234)).to.eql(true)
   })
-  it('should reject an already rejected promise from a rejected promise with the same reason', function (done) {
-    return promise(function (resolve, reject) {
-      reject()
-    })
-    .catch(function () {
-      return promise(function (resolve, reject) {
-        setTimeout(function () {
-          reject(123)
-        }, 0)
-      })
-    })
-    .catch(function (reason) {
-      expect(reason).to.eql(123)
-      done()
-    })
+  it('should be really really chainable', function () {
+    var resolvedStub = sinon.stub()
+    var rejectedStub = sinon.stub()
+    var d = Promise.defer()
+    d.reject(123)
+    d.promise
+      .then(resolvedStub, null)
+      .then(null, rejectedStub)
+    expect(resolvedStub.called).to.eql(false)
+    expect(rejectedStub.calledWith(123)).to.eql(true)
   })
-
-  // requires native Promise api
-  if (typeof Promise === 'undefined') return
-  it('should not resolve promises', function (done) {
-    return promise(function (resolve, reject) {
-      reject(Promise.resolve(123))
+  it('should not change once rejected', function () {
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.reject(123)
+    d.reject(234)
+    d.promise.then(null, stub)
+    expect(d.promise.value).to.eql(123)
+  })
+  it('should reject an already fulfilled promise with the same reason', function () {
+    var stub = sinon.stub()
+    var d1 = Promise.defer()
+    var d2 = Promise.defer()
+    d2.reject(123)
+    d1.resolve()
+    d1.promise.then(function () {
+      return d2.promise
     })
-    .then(null, function (val) {
-      expect(typeof val).to.eql('object')
-      done()
+    .then(null, stub)
+    expect(stub.calledWith(123)).to.eql(true)
+  })
+  it('should reject an already rejected promise from a rejected promise with the same reason', function () {
+    var stub = sinon.stub()
+    var d1 = Promise.defer()
+    var d2 = Promise.defer()
+    d1.reject()
+    d2.reject(123)
+    d1.promise.then(null, function () {
+      return d2.promise
     })
+    .then(null, stub)
+    expect(stub.calledWith(123)).to.eql(true)
+  })
+  it('should not resolve promises', function () {
+    var p = Promise.resolve(123)
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.reject(p)
+    d.promise.then(null, stub)
+    expect(stub.calledWith(p)).to.eql(true)
   })
 })

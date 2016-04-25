@@ -1,98 +1,65 @@
-/* globals describe it Promise */
+/* globals describe it */
 var expect = require('chai').expect
 var sinon = require('sinon')
-var promise = require('../index')
+var Promise = require('../extra')
 
 describe('async resolve', function () {
-  it('should resolve values', function (done) {
-    return promise(function (resolve) {
-      setTimeout(function () {
-        resolve(123)
-      }, 0)
-    })
-    .then(function (val) {
-      expect(val).to.eql(123)
-      done()
-    })
-  })
-  it('should be chainable', function (done) {
-    return promise(function (resolve) {
-      setTimeout(function () {
-        resolve(123)
-      }, 0)
-    })
-    .then(function () {
-      return 234
-    })
-    .then(function (chained) {
-      expect(chained).to.eql(234)
-      done()
-    })
-  })
-  it('should be really chainable', function (done) {
-    return promise(function (resolve) {
-      setTimeout(function () {
-        resolve(123)
-      }, 0)
-    })
-    .then(null, null)
-    .then(function () {
-      return 234
-    })
-    .then(function (chained) {
-      expect(chained).to.eql(234)
-      done()
-    })
-  })
-  it('should not change once resolved', function (done) {
-    return promise(function (resolve) {
-      setTimeout(function () {
-        resolve(123)
-        resolve(234)
-      }, 0)
-    })
-    .then(function (val) {
-      expect(val).to.eql(123)
-      done()
-    })
-  })
-  it('should not call catch or reject', function (done) {
+  it('should call resolve', function () {
     var stub = sinon.stub()
-    return promise(function (resolve) {
-      setTimeout(function () {
-        resolve(123)
-      }, 0)
-    })
-    .catch(stub)
-    .then(null, stub)
-    .then(function () {
-      expect(stub.called).to.eql(false)
-      done()
-    })
+    var d = Promise.defer()
+    d.promise.then(stub)
+    d.resolve(123)
+    expect(stub.calledWith(123)).to.eql(true)
   })
-
-  // requires native Promise api
-  if (typeof Promise === 'undefined') return
-  it('should resolve promises', function (done) {
-    return promise(function (resolve) {
-      setTimeout(function () {
-        resolve(Promise.resolve(123))
-      }, 0)
-    })
-    .then(function (val) {
-      expect(val).to.eql(123)
-      done()
-    })
+  it('should not call reject', function () {
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.promise.then(null, stub)
+    d.resolve(123)
+    expect(stub.called).to.eql(false)
   })
-  it('should be compatible with the native promise api', function (done) {
-    return Promise.all([promise(function (resolve) {
-      setTimeout(function () {
-        resolve(123)
-      }, 0)
-    })])
-    .then(function (resolved) {
-      expect(resolved).to.eql([123])
-      done()
-    })
+  it('should not call catch', function () {
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.promise.catch(stub)
+    d.resolve(123)
+    expect(stub.called).to.eql(false)
+  })
+  it('should be really chainable', function () {
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.promise
+      .then(null, null)
+      .then(function () { return 234 })
+      .then(stub)
+    d.resolve(123)
+    expect(stub.calledWith(234)).to.eql(true)
+  })
+  it('should be really really chainable', function () {
+    var resolvedStub = sinon.stub()
+    var rejectedStub = sinon.stub()
+    var d = Promise.defer()
+    d.promise
+      .then(null, rejectedStub)
+      .then(resolvedStub, null)
+    d.resolve(123)
+    expect(rejectedStub.called).to.eql(false)
+    expect(resolvedStub.calledWith(123)).to.eql(true)
+  })
+  it('should not change once resolved', function () {
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.resolve(123)
+    d.resolve(234)
+    d.promise.then(stub)
+    expect(d.promise.value).to.eql(123)
+  })
+  it('should resolve promises', function () {
+    var p = Promise.resolve(123)
+    var stub = sinon.stub()
+    var d = Promise.defer()
+    d.promise.then(stub)
+    d.resolve(p)
+    expect(stub.calledWith(123)).to.eql(true)
   })
 })
