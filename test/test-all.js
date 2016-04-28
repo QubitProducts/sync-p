@@ -25,11 +25,13 @@ describe('all', function () {
   })
   describe('when called with a mixture of values and promises', function () {
     it('should resolve the promises and return only values', function (done) {
-      var values = [1, 2, Promise.resolve(3)]
+      var d = Promise.defer()
+      var values = [1, 2, Promise.resolve(3), d.promise]
       Promise.all(values).then(function (val) {
-        expect(val).to.eql([1, 2, 3])
+        expect(val).to.eql([1, 2, 3, 4])
         done()
       })
+      d.resolve(4)
     })
   })
   describe('error', function () {
