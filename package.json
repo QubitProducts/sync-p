@@ -9,11 +9,7 @@
   "scripts": {
     "test": "make test"
   },
-  "author": {
-    "name": "Alan Clarke",
-    "email": "alan@qubit.com",
-    "url": "qubit.com"
-  },
+  "author": "Alan Clarke <alan@qubit.com> (qubit.com)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/QubitProducts/sync-p.git"
@@ -29,11 +25,20 @@
     "karma-webpack": "^1.7.0",
     "mocha": "^2.4.5",
     "promises-aplus-tests": "^2.1.1",
-    "require1k": "stuk/require1k",
+    "require1k": "github:stuk/require1k",
     "serve": "^1.4.0",
     "sinon": "^2.0.0-pre",
     "standard": "^6.0.8",
     "webpack": "^1.12.14"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "bugs": {
+    "url": "https://github.com/QubitProducts/sync-p/issues"
+  },
+  "homepage": "https://github.com/QubitProducts/sync-p#readme",
+  "keywords": [
+    "promise",
+    "synchronous",
+    "async"
+  ]
 }
