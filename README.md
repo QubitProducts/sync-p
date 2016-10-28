@@ -14,27 +14,27 @@ npm install sync-p
 
 ## usage
 ```js
-var promise = require('sync-p')
+var Promise = require('sync-p')
 
 var result
-promise(function (resolve, reject) {
-  // resolve immediately
-  resolve(true)
-})
-.then(null, null)
-.then(function (val) {
-  result = val
-})
+var p = new Promise(function (resolve, reject) {
+    // resolve immediately
+    resolve(true)
+  })
+  .then(null, null)
+  .then(function (val) {
+    result = val
+  })
 console.log(result) // true
 
-promise(function (resolve, reject) {
+new Promise(function (resolve, reject) {
   throw 'error'
 })
 .catch(function (err) {
   console.log(err) // 'error'
 })
 
-promise(function (resolve, reject) {
+var p = new Promise(function (resolve, reject) {
   setTimeout(function () {
     resolve(true)
   }, 0)
@@ -43,11 +43,23 @@ promise(function (resolve, reject) {
 
 var all = require('sync-p/all')
 
-all([1, 2, promise3]).then(function (val) {
+var p = all([1, 2, promise3]).then(function (val) {
   console.log(val) // [1, 2, 3]
 })
 
 // ... etc.
+```
+
+
+## extra
+```js
+var Promise = require('sync-p/extra')
+
+// includes all, resolve, reject and defer
+var promise = Promise.all(array)
+var resolved = Promise.resolve(123)
+var rejected = Promise.reject(321)
+var deferred = Promise.defer()
 ```
 
 ## run tests
