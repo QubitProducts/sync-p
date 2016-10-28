@@ -6,10 +6,12 @@ module.exports = function all (values) {
     if (!counter) return resolve(values)
     while (l--) loop(values[l], l)
     function loop (val, l) {
-      if (val && typeof val.then === 'function') return val.then(function decrement (val) {
-        values[l] = val
-        --counter || resolve(values)
-      }, reject)
+      if (val && typeof val.then === 'function') {
+        return val.then(function decrement (val) {
+          values[l] = val
+          --counter || resolve(values)
+        }, reject)
+      }
       --counter || resolve(values)
     }
   })
