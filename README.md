@@ -60,6 +60,7 @@ var promise = Promise.all(array)
 var resolved = Promise.resolve(123)
 var rejected = Promise.reject(321)
 var deferred = Promise.defer()
+var race = Promise.race(array)
 ```
 
 ## run tests
