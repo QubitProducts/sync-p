@@ -4,13 +4,13 @@ var Promise = require('../extra')
 
 describe('race', function () {
   describe('when called with an empty array', function () {
-    it('should return immediately', function () {
+    it('should never resolve', function () {
       var values = []
-      var result
+      var isResolved = false
       Promise.race(values).then(function (val) {
-        result = val
+        isResolved = true
       })
-      expect(result).to.eql(values)
+      expect(isResolved).to.eql(false)
     })
   })
   describe('when called with just values', function () {
