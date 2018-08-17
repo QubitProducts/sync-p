@@ -52,6 +52,17 @@ describe('race', function () {
       })
     })
   })
+  describe('when called with a delayed first promise', function () {
+    it('should resolve immediately with second promise', function (done) {
+      var d = Promise.defer()
+      var values = [d.promise, Promise.resolve(2)]
+      Promise.race(values).then(function (val) {
+        expect(val).to.eql(2)
+        done()
+      })
+      d.resolve(1)
+    })
+  })
   describe('error', function () {
     it('should reject the promise', function (done) {
       var values = [Promise.reject('error'), 2, 3]
