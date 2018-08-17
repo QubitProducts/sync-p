@@ -59,8 +59,7 @@ describe('catch', function () {
     d1.resolve()
     d1.promise.then(function () {
       return d2.promise
-    })
-    .catch(stub)
+    }).catch(stub)
     expect(stub.calledWith(123)).to.eql(true)
   })
   it('should reject an already rejected promise from a rejected promise with the same reason', function () {
@@ -71,8 +70,7 @@ describe('catch', function () {
     d2.reject(123)
     d1.promise.catch(function () {
       return d2.promise
-    })
-    .then(null, stub)
+    }).then(null, stub)
     expect(stub.calledWith(123)).to.eql(true)
   })
   it('should not resolve promises', function () {

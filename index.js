@@ -1,9 +1,12 @@
 var err = new Error('Error: recurses! infinite promise chain detected')
 module.exports = function promise (resolver) {
   var waiting = { res: [], rej: [] }
-  var p = { 'then': then, 'catch': function thenCatch (onReject) {
-    return then(null, onReject)
-  }}
+  var p = {
+    'then': then,
+    'catch': function thenCatch (onReject) {
+      return then(null, onReject)
+    }
+  }
   try { resolver(resolve, reject) } catch (e) {
     p.status = false
     p.value = e

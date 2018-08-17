@@ -3,13 +3,9 @@ module.exports = function (config) {
     frameworks: ['mocha'],
     files: [ 'test/test-*' ],
     preprocessors: { '/**/*.js': ['webpack', 'sourcemap'] },
-    webpack: {
-      watch: true,
-      devtool: 'inline-source-map'
-    },
-    webpackServer: {
-      quiet: true,
-      noInfo: true
+    webpackMiddleware: {
+      stats: 'errors-only',
+      logLevel: 'error'
     },
     browsers: ['Chrome']
   })

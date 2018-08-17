@@ -36,9 +36,10 @@ describe('all', function () {
   })
   describe('error', function () {
     it('should reject the promise', function (done) {
-      var values = [1, 2, Promise.reject('error')]
+      var error = new Error('eek')
+      var values = [1, 2, Promise.reject(error)]
       Promise.all(values).catch(function (err) {
-        expect(err).to.eql('error')
+        expect(err).to.eql(error)
         done()
       })
     })

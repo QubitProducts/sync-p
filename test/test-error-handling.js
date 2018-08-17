@@ -7,9 +7,8 @@ describe('error handling', function () {
   it('should reject when an error is thrown in the resolver', function (done) {
     var error = new Error('error')
     return Promise(function (resolve, reject) {
-      throw new Error('error')
-    })
-    .catch(function (err) {
+      throw error
+    }).catch(function (err) {
       expect(err).to.eql(error)
       done()
     })

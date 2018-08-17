@@ -65,9 +65,10 @@ describe('race', function () {
   })
   describe('error', function () {
     it('should reject the promise', function (done) {
-      var values = [Promise.reject('error'), 2, 3]
+      var error = new Error('eek')
+      var values = [Promise.reject(error), 2, 3]
       Promise.race(values).catch(function (err) {
-        expect(err).to.eql('error')
+        expect(err).to.eql(error)
         done()
       })
     })

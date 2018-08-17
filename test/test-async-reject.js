@@ -64,8 +64,7 @@ describe('async reject', function () {
     var d2 = Promise.defer()
     d1.promise.then(function () {
       return d2.promise
-    })
-    .then(null, stub)
+    }).then(null, stub)
     d1.resolve()
     d2.reject(123)
     expect(stub.calledWith(123)).to.eql(true)
@@ -76,8 +75,7 @@ describe('async reject', function () {
     var d2 = Promise.defer()
     d1.promise.then(null, function () {
       return d2.promise
-    })
-    .then(null, stub)
+    }).then(null, stub)
     d1.reject()
     d2.reject(123)
     expect(stub.calledWith(123)).to.eql(true)
