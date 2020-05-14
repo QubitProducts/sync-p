@@ -23,18 +23,6 @@ describe('any', function () {
       expect(result).to.eql(1)
     })
   })
-  // describe('when called with a mixture of values and promises', function () {
-  //   it('should resolve the promises and return only values', function (done) {
-  //     var d = Promise.defer()
-  //     var error = new Error('eek')
-  //     var values = [d.promise, Promise.reject(error)]
-  //     Promise.any(values).then(function (val) {
-  //       expect(val).to.eql(4)
-  //       done()
-  //     })
-  //     d.resolve(4)
-  //   })
-  // })
   describe('when called with a mixture of values and promises', function () {
     it('should resolve to the first value in the array', function (done) {
       var d = Promise.defer()
