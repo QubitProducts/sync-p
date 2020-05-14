@@ -47,6 +47,14 @@ var p = all([1, 2, promise3]).then(function (val) {
   console.log(val) // [1, 2, 3]
 })
 
+var p = any([promise1, promise2, 3]).then(function (val) {
+  console.log(val) // 3
+})
+
+var p = any([promise1, promise2, promise3]).catch(function (err) {
+  console.log(err) // [err1, err2, err3]
+})
+
 // ... etc.
 ```
 
@@ -61,6 +69,7 @@ var resolved = Promise.resolve(123)
 var rejected = Promise.reject(321)
 var deferred = Promise.defer()
 var race = Promise.race(array)
+var any = Promise.any(array)
 ```
 
 ## run tests
