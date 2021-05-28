@@ -46,9 +46,9 @@ describe('all', function () {
   })
   describe('with circular promises', function () {
     it('should throw', function () {
-      let p = Promise.defer()
-      expect(() => p.resolve(p.promise)).to.throw()
-      expect(() => p.reject(p.promise)).to.throw()
+      var p = Promise.defer()
+      expect(function () { p.resolve(p.promise) }).to.throw()
+      expect(function () { p.reject(p.promise) }).to.throw()
     })
   })
 })
