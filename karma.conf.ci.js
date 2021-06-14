@@ -1,3 +1,4 @@
+const { name } = require('./package.json')
 const karmaConfig = require('./karma.conf')
 const customLaunchers = {
   ChromeCustom: {
@@ -7,7 +8,7 @@ const customLaunchers = {
   sl_firefox: {
     base: 'SauceLabs',
     browserName: 'firefox',
-    version: '68'
+    version: 'latest'
   },
   sl_ios_safari_10: {
     base: 'SauceLabs',
@@ -40,7 +41,7 @@ module.exports = function (config) {
 
 function sauceConfig (baseConfig) {
   return Object.assign({}, baseConfig, {
-    sauceLabs: { testName: '@qubit/utils' },
+    sauceLabs: { testName: name },
     customLaunchers: customLaunchers,
     browsers: Object.keys(customLaunchers),
     reporters: ['progress', 'saucelabs'],
