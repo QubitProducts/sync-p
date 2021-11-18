@@ -1,4 +1,6 @@
 var Promise = require('./index')
+Promise.resolve = require('./resolve')
+
 module.exports = function race (values) {
   return Promise(function (resolve, reject) {
     var counter = values && values.length

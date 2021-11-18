@@ -1,4 +1,5 @@
 var promise = require('./index')
+promise.resolve = require('./resolve')
 
 module.exports = function any (values) {
   function flip (p) {
